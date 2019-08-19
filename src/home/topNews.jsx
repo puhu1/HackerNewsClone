@@ -3,8 +3,10 @@ import { Card, CardContent} from '@material-ui/core';
 import ContainerHeader from './ContainerHeader';
 import { Link } from 'react-router-dom'
 import Comments from './comments';
+import {timeAgo} from './timeFormat'
 
-
+const TOP_STORY_URL ='https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty'
+const ITEM_URL ='https://hacker-news.firebaseio.com/v0/item/'
 export class topNews extends Component {
     constructor(props) {
         super(props)
@@ -29,7 +31,7 @@ export class topNews extends Component {
     }
 
     fetchStoryIds = () => {
-        fetch('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
+        fetch(TOP_STORY_URL)
             .then(response => response.json())
             .then(response => {
                 
@@ -41,7 +43,7 @@ export class topNews extends Component {
     }
 
     fetchInfoById = (id) => {
-        fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`)
+        fetch(`${ITEM_URL+id}.json?print=pretty`)
             .then(res => res.json())
             .then((res) => {
         if(this._isMounted)
@@ -68,7 +70,7 @@ export class topNews extends Component {
                     <CardContent >
                         {val.title}
                         <span>
-                            <p style={{ color: '#A5A5A5' }}>{val.score} by {val.by}</p>
+                            <p style={{ color: '#A5A5A5' }}>{val.score} points by {val.by} | posted {timeAgo(val.time)}</p>
                             {val.kids ?
                                 <Link to={"/comment/" + val.id}>{val.kids.length} Comments</Link> :
                                 <Link to="/">0 Comments</Link>

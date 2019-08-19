@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ContainerHeader from './ContainerHeader';
 import { Card, CardContent } from '@material-ui/core';
-import { Story, Comment } from "./data";
 import { timeAgo } from './timeFormat'
 
 export class Comments extends Component {
