@@ -52,15 +52,15 @@ export class Comments extends Component {
                     .then(res => res.json())
                     .then(kidsComment => {
                         if (kidsComment.deleted === undefined) {
-                            var dd = {}
-                            dd["text"] = kidsComment.text
-                            dd['kids'] = kidsComment.kids
-                            dd['by'] = kidsComment.by
-                            dd['time'] = timeAgo(kidsComment.time)
-                            dd['parent'] = kidsComment.parent
-                            dd['id'] = kidsComment.id
+                            var commentObject = {}
+                            commentObject["text"] = kidsComment.text
+                            commentObject['kids'] = kidsComment.kids
+                            commentObject['by'] = kidsComment.by
+                            commentObject['time'] = timeAgo(kidsComment.time)
+                            commentObject['parent'] = kidsComment.parent
+                            commentObject['id'] = kidsComment.id
                             this.setState({
-                                kids_comment: this.state.kids_comment.concat(dd)
+                                kids_comment: this.state.kids_comment.concat(commentObject)
                             })
                         }
                     })
