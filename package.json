@@ -3,8 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.3.2",
+    "@material-ui/icons": "^2.0.0",
+    "@material-ui/lab": "^3.0.0-alpha.30",
+    "@material-ui/styles": "3.0.0-alpha.1",
+    "apollo-boost": "^0.4.4",
+    "graphql": "^14.4.2",
+    "graphql-tag": "^2.10.1",
     "react": "^16.9.0",
+    "react-apollo": "^3.0.1",
     "react-dom": "^16.9.0",
+    "react-navigation": "^3.11.1",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "3.1.1"
   },
   "scripts": {
