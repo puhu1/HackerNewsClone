@@ -3,10 +3,8 @@ import { Card, CardContent } from '@material-ui/core';
 import ContainerHeader from './ContainerHeader';
 import { Link } from 'react-router-dom'
 import Comments from './comments';
-import { timeAgo } from './timeFormat'
-
-const TOP_STORY_URL = 'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty'
-const ITEM_URL = 'https://hacker-news.firebaseio.com/v0/item/'
+import { timeAgo } from '../common/timeFormat'
+import { TOP_STORY_URL, ITEM_URL } from '../common/constants'
 
 export class topNews extends Component {
     constructor(props) {
