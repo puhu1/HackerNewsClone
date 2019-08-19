@@ -3,28 +3,22 @@ import ContainerHeader from './ContainerHeader';
 import { Card, CardContent } from '@material-ui/core';
 import { timeAgo } from './timeFormat'
 
+const ITEM_URL = 'https://hacker-news.firebaseio.com/v0/item/'
+
 export class Comments extends Component {
     constructor(props) {
         super(props)
         this.state = {
             page_title: "Comments",
-            story_id: '',
             by: '',
-            parent_text: '',
             kids: [],
             kids_comment: [],
             kids_comment_kids: [],
-            parentof_kids: '',
-            grand_parent: '',
-            kidsOfkids: '',
-            api_call: false,
             inner_comments: {},
             comment_id: [],
             active_id: '',
             score: ''
-
         }
-
     }
 
     componentDidMount() {
@@ -34,13 +28,10 @@ export class Comments extends Component {
     getStroyId() {
         let split_id = window.location.pathname.split("/")
         let story_id = split_id[split_id.length - 1]
-        this.setState({ story_id: story_id })
         this.fetchCommentWidStoryId(story_id)
-
-
     }
     fetchCommentWidStoryId(id) {
-        fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`)
+        fetch(`${ITEM_URL + id}.json?print=pretty`)
             .then(res => res.json())
             .then(parentCommentData => {
                 this.setState({
@@ -57,7 +48,7 @@ export class Comments extends Component {
         let kids = this.state.kids
         if (kids !== undefined && kids.length !== 0) {
             kids.map((value, i) => {
-                fetch(`https://hacker-news.firebaseio.com/v0/item/${value}.json?print=pretty`)
+                fetch(`${ITEM_URL + value}.json?print=pretty`)
                     .then(res => res.json())
                     .then(kidsComment => {
                         if (kidsComment.deleted === undefined) {
@@ -69,7 +60,6 @@ export class Comments extends Component {
                             dd['parent'] = kidsComment.parent
                             dd['id'] = kidsComment.id
                             this.setState({
-                                grand_parent: kidsComment.parent,
                                 kids_comment: this.state.kids_comment.concat(dd)
                             })
                         }
@@ -84,23 +74,22 @@ export class Comments extends Component {
         }
         this.setState({ active_id: node.id })
         let kids = node.kids
-        this.setState({ api_call: true })
         if (kids !== undefined && kids.length !== 0) {
             for (var i = 0; i < kids.length; i++) {
                 let value = kids[i]
-                fetch(`https://hacker-news.firebaseio.com/v0/item/${value}.json?print=pretty`)
+                fetch(`${ITEM_URL + value}.json?print=pretty`)
                     .then(res => res.json())
                     .then(kidsComment => {
-                        var dd = {}
-                        dd["text"] = kidsComment.text
-                        dd['kids'] = kidsComment.kids
-                        dd['by'] = kidsComment.by
-                        dd['id'] = kidsComment.id
-                        dd['time'] = timeAgo(kidsComment.time)
-                        dd['parent'] = kidsComment.parent
+                        var commentObject = {}
+                        commentObject["text"] = kidsComment.text
+                        commentObject['kids'] = kidsComment.kids
+                        commentObject['by'] = kidsComment.by
+                        commentObject['id'] = kidsComment.id
+                        commentObject['time'] = timeAgo(kidsComment.time)
+                        commentObject['parent'] = kidsComment.parent
 
                         this.setState({
-                            kids_comment_kids: this.state.kids_comment_kids.concat(dd)
+                            kids_comment_kids: this.state.kids_comment_kids.concat(commentObject)
                         })
                         if (this.state.kids_comment_kids.length === kids.length) {
                             let comment = []
@@ -145,7 +134,7 @@ export class Comments extends Component {
     }
     render() {
         let comment = []
-        let kids_comment = this.state.kids_comment.forEach(text => {
+        this.state.kids_comment.forEach(text => {
             comment.push(
                 <Card>
                     <CardContent>
