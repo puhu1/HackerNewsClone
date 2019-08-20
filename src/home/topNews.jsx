@@ -18,7 +18,7 @@ export class topNews extends Component {
     componentDidMount() {
         store.subscribe(()=>{
             this.setState({news_stories:this.state.news_stories.concat(store.getState()['storyReducer'])})
-            console.log(store.getState());
+            // console.log(store.getState());
             
         })
         
