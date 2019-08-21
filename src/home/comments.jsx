@@ -17,7 +17,8 @@ export class Comments extends Component {
             inner_comments: {},
             comment_id: [],
             active_id: '',
-            score: ''
+            score: '',
+            story_text: null
         }
     }
 
@@ -36,7 +37,7 @@ export class Comments extends Component {
             .then(parentCommentData => {
                 this.setState({
                     by: parentCommentData.by,
-                    text: parentCommentData.title,
+                    story_text: parentCommentData.title,
                     kids: parentCommentData.kids,
                     score: parentCommentData.score,
                     url: parentCommentData.url
@@ -44,7 +45,7 @@ export class Comments extends Component {
                 this.fetchKidsComment()
             })
     }
-    fetchKidsComment (node = null){
+    fetchKidsComment(node = null) {
         if (node) {
             if (node.id === this.state.active_id) {
                 return
@@ -68,7 +69,7 @@ export class Comments extends Component {
                             commentObject['time'] = timeAgo(kidsComment.time)
                             commentObject['parent'] = kidsComment.parent
                             commentObject['id'] = kidsComment.id
-                            if (node===null) {
+                            if (node === null) {
                                 this.setState({
                                     kids_comment: this.state.kids_comment.concat(commentObject)
                                 })
@@ -82,7 +83,6 @@ export class Comments extends Component {
                                     for (var i = 0; i < this.state.kids_comment_kids.length; i++) {
                                         let text = this.state.kids_comment_kids[i]
                                         let card =
-
                                             <Card style={{ width: "70%", float: "right" }}>
                                                 <CardContent>
                                                     <br /><br /><p style={{ fontStyle: 'italic', color: '#A5A5A5', float: "left" }}> {text.by} commented {text.time} </p>
@@ -96,9 +96,6 @@ export class Comments extends Component {
                                             </Card>
 
                                         comment.push(card)
-                                        let dict_ = this.state.inner_comments
-                                        dict_[text.id] = card
-                                        this.setState({ inner_comments: dict_ })
                                     }
                                     var dict_ = this.state.inner_comments
                                     dict_[node.id] = comment
@@ -108,9 +105,7 @@ export class Comments extends Component {
                                     }
                                     else {
                                         this.setState({ comment_id: [node.id] })
-
                                     }
-
                                     this.setState({ kids_comment_kids: [] })
                                 }
                             }
@@ -122,36 +117,34 @@ export class Comments extends Component {
     }
 
     render() {
-        let comment = []
-        this.state.kids_comment.forEach(text => {
-            comment.push(
-                <Card>
-                    <CardContent>
-                        <br /><br /> <p style={{ fontStyle: 'italic', color: '#A5A5A5', float: "left" }}> {text.by} commented {text.time} </p>
-                        <br /><br />
-                        <span style={{ pfetchKidsCommentadding: '5px' }}>{text.text}</span><br /><br />
-                        {text.kids ?
-                            <span onClick={(event) => this.fetchKidsComment(text)} style={{ cursor: "pointer", fontStyle: 'italic', color: '#A5A5A5', float: "right" }}>{text.kids.length} comments </span>
-                            : <span style={{ fontStyle: 'italic', color: '#A5A5A5', float: "right" }}>0 comments </span>}
-                        {this.state.comment_id.includes(text.parent) || this.state.comment_id.includes(text.id) ? this.state.inner_comments[text.id] : []}
-                    </CardContent>
-                </Card>
-
-            )
-        })
-
+        const { page_title, story_text, url, score, by, kids_comment, comment_id, inner_comments } = this.state
         return (
             <div>
-                <ContainerHeader title={this.state.page_title} />
-                {this.state.text ?
-                    <span>
-                        <h3 style={{ paddig: "2px" }}>{this.state.text}  <a href={this.state.url}>({this.state.url})</a></h3>
-                        <p style={{ color: '#808080' }}>{this.state.score} points by {this.state.by}  | {this.state.kids_comment.length} comments</p>
-                    </span> : "Loading...please wait or refresh the page"}
-                <span>{comment}</span>
+                <ContainerHeader title={page_title} />
+                <span>
+                    <h3 style={{ paddig: "2px" }}>{story_text}  <a href={url}>({url})</a></h3>
+                    <p style={{ color: '#808080' }}>{score} points by {by}  | {kids_comment.length} comments</p>
+                </span>
+                <span>
+                    {
+                        kids_comment.map(text => {
+                            return (
+                                <Card>
+                                    <CardContent>
+                                        <p style={{ fontStyle: 'italic', color: '#A5A5A5', float: "left" }}> {text.by} commented {text.time} </p>
+                                        <p style={{ pfetchKidsCommentadding: '5px' }}>{text.text}</p>
+                                        {text.kids ?
+                                            <span onClick={(event) => this.fetchKidsComment(text)} style={{ cursor: "pointer", fontStyle: 'italic', color: '#A5A5A5', float: "right" }}>{text.kids.length} comments </span>
+                                            : <span style={{ fontStyle: 'italic', color: '#A5A5A5', float: "right" }}>0 comments </span>}
+                                        {comment_id.includes(text.parent) || comment_id.includes(text.id) ? inner_comments[text.id] : []}
+                                    </CardContent>
+                                </Card>
+                            )
+                        })
+                    }
+                </span>
             </div>
         )
     }
-
 }
 export default Comments
