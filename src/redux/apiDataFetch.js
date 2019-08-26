@@ -6,20 +6,26 @@ export const fetchStoryIds = () => {
         .then(response => response.json())
         .then(response => {
             response.forEach((val, index) => {
-                if(index<10)
-                    fetchInfoById(val)
+                if (index < 20)
+                    fetchInfoById(val, "TOP_STORIES")
             })
         })
 }
 
-export const fetchInfoById = (id) => {
+export const fetchInfoById = (id, type) => {
     fetch(`${ITEM_URL + id}.json?print=pretty`)
         .then(res => res.json())
         .then((res) => {
-            store.dispatch({
-                type:"TOP_STORIES",
-                payload:res
-            })
+            if (res) {
+                store.dispatch({
+                    type: type,
+                    payload: res
+                })
+                if (type == "COMMENT" && res.kids) {
+                    res.kids.map(val => {
+                        fetchInfoById(val, "COMMENT")
+                    })
+                }
+            }
         })
 }
-
